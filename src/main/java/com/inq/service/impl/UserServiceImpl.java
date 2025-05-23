@@ -51,13 +51,22 @@ public class UserServiceImpl implements UserService{
 		text.append("<a href=\"unlock?email=" + to + "\">Click here to unlock Account</a>");
 		sendMail.sendEmail(to, subject, text.toString());
 		
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean unlockAccount(UnlockForm form) {
 		// TODO Auto-generated method stub
-		return false;
+		UserDtls entity=uRepo.findByEmail(form.getEmail());
+		if(entity.getPwd().equals(form.getTempPwd())) {
+			entity.setPwd(form.getNewPwd());
+			entity.setAccStatus("UnLocked");
+			uRepo.save(entity);
+			return true;
+		}else {
+			return false;
+		}
+		
 	}
 
 	@Override
